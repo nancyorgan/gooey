@@ -9,7 +9,7 @@
 		<script language="javascript" type="text/javascript">
 
 			///////////////////////////////////////////////////////////////////////////
-			//////////////////// Set up and initiate svg containers ///////////////////
+			//////////////////// Set up and initiate svg containers //////////////////
 			var margin = {
 				top: 10,
 				right: 0,
@@ -45,9 +45,10 @@
                 .attr("id","gooeyCodeFilter");
 
 			// This makes the circles blob together
+
 			filter.append("feGaussianBlur")
 				.attr("in","SourceGraphic")
-				.attr("stdDeviation","10")
+				.attr("stdDeviation","15")
 				//to fix safari: http://stackoverflow.com/questions/24295043/svg-gaussian-blur-in-safari-unexpectedly-lightens-image
 				.attr("color-interpolation-filters","sRGB")
 				.attr("result","blur");
@@ -59,12 +60,12 @@
 				.attr("mode","matrix")
 				// this is the matrix that effects the blurriness
 				// R G B size, pos = black background, neg = white
-				.attr("values","1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -5")
+				.attr("values","1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9")
 				.attr("result","gooey");
 
 
 			//Create a gradient for the fill
-			var colors = ["#4286f4", "#fcf64e", "#BD1550"];
+			var colors = ["#f9f9f9", "#303030", "#f9f9f9", "#303030"];
 			defs.append("linearGradient")
 				.attr("id", "gradientRainbow")
 				.attr("gradientUnits", "userSpaceOnUse")
@@ -81,7 +82,17 @@
 		        .attr("id", "clip")
 		        .append("path")
 		        .attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath);
+		 	///////////////////////////////////////////////////////////////////////////
+  			///////////////////////// Place Hexagon in center /////////////////////////
 
+
+				svg.append("path")
+					.attr("class", "hexagon")
+					.attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath)
+					.style("stroke", "#F2F2F2")
+					.style("stroke-width", "4px")
+					.style("fill", "#01042b");
+					//.style("fill-opacity", "1");
 			///////////////////////////////////////////////////////////////////////////
 			////////////////////// Place circles inside hexagon ///////////////////////
 		    //First append a group for the clip path, then a new group that can be transformed
@@ -118,17 +129,6 @@
 				.duration(function(d,i) { return Math.random()*2000+500; })
 				.delay(function(d,i) { return Math.random()*3000;})
 				.attr("r", function(d,i) { return d.r; });
-
-			///////////////////////////////////////////////////////////////////////////
-			///////////////////////// Place Hexagon in center /////////////////////////
-
-			//Place a hexagon on the scene
-			svg.append("path")
-				.attr("class", "hexagon")
-				.attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath)
-				.style("stroke", "#F2F2F2")
-				.style("stroke-width", "4px")
-				.style("fill", "none");
 
 			///////////////////////////////////////////////////////////////////////////
 			////////////////////// Circle movement inside hexagon /////////////////////
