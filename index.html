@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-        <script  type="text/javascript" src="d3/d3.v3.min.js"></script>
+        <script type="text/javascript" src="d3/d3.v3.min.js"></script>
+		<script type="text/javascript" src="jquery-3.1.1.min.js"></script>
 	</head>
 	<body>
 		<div id="hexagon"></div>
@@ -45,7 +46,6 @@
                 .attr("id","gooeyCodeFilter");
 
 			// This makes the circles blob together
-
 			filter.append("feGaussianBlur")
 				.attr("in","SourceGraphic")
 				.attr("stdDeviation","15")
@@ -62,7 +62,6 @@
 				// R G B size, pos = black background, neg = white
 				.attr("values","1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9")
 				.attr("result","gooey");
-
 
 			//Create a gradient for the fill
 			var colors = ["#f9f9f9", "#303030", "#f9f9f9", "#303030"];
@@ -82,17 +81,15 @@
 		        .attr("id", "clip")
 		        .append("path")
 		        .attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath);
-		 	//////////////////// TEST //////////////////////////////////////////////////////
+		 	/////////////////////////////////////////////////////////////////////////
   			///////////////////////// Place Hexagon in center /////////////////////////
+			svg.append("path")
+				.attr("class", "hexagon")
+				.attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath)
+				.style("stroke", "#686c72")
+				.style("stroke-width", "4px")
+				.style("fill", "#01042b");
 
-
-				svg.append("path")
-					.attr("class", "hexagon")
-					.attr("d", "M" + (width/2) + "," + (height/2) + hexagonPath)
-					.style("stroke", "#F2F2F2")
-					.style("stroke-width", "4px")
-					.style("fill", "#01042b");
-					//.style("fill-opacity", "1");
 			///////////////////////////////////////////////////////////////////////////
 			////////////////////// Place circles inside hexagon ///////////////////////
 		    //First append a group for the clip path, then a new group that can be transformed
@@ -112,7 +109,7 @@
 					r: 15 + Math.random() * 25
 				});
 			};
-            console.log(randStart[1]);
+            console.log(randStart);
 
 		    var circle = circleWrapper.selectAll(".dots")
 		    	.data(randStart)
@@ -126,9 +123,9 @@
 				.each(move);
 
 			circle.transition("grow")
+				.attr("r", function(d,i) { return d.r; })
 				.duration(function(d,i) { return Math.random()*2000+500; })
-				.delay(function(d,i) { return Math.random()*3000;})
-				.attr("r", function(d,i) { return d.r; });
+				.delay(function(d,i) { return Math.random()*3000;});
 
 			///////////////////////////////////////////////////////////////////////////
 			////////////////////// Circle movement inside hexagon /////////////////////
@@ -147,8 +144,8 @@
 
 				//Move new locations along the vertical sides in 33% of the cases
 				if (randSide > 0.66) {
-					newx = sideX * 0.5 * SQRT3 * hexRadius - sideX*radius;
-					newy = sideY * Math.random() * 0.5 * hexRadius - sideY*radius;
+					newx = sideX * hexRadius * 0.5 * SQRT3 - sideX*radius;
+					newy = sideY * hexRadius * 0.5 * Math.random() - sideY*radius;
 				} else {
 					//Choose a new x location randomly,
 					//the y position will be calculated later to lie on the hexagon border
@@ -171,7 +168,7 @@
 
 					newx = newx - sideX*offSetX;
 					newy = newy - sideY*offSetY;
-				}//else
+				};//else
 
 				//Transition the circle to its new location
 				d3.select(this)
@@ -184,7 +181,9 @@
 
 			}//function move
 
+			$(document).ready(function(){
+				$("#hexagon").draggable();
+			});
 		</script>
-
 	</body>
 </html>
